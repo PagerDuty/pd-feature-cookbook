@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # Ideally this would use .ruby-version, but alas
+      - image: circleci/ruby:2.4.2
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - gems-{{ checksum "Gemfile.lock" }}
+          - gems-
+
+      - run:
+          name: install dependencies
+          command: bundle install --jobs=4 --retry=3 --path .bundle
+
+      - save_cache:
+          paths:
+            - .bundle
+          key: gems-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: specs
+          command: |
+            mkdir /tmp/test-results
+            bundle exec rspec --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml
+
+      - store_test_results:
+          path: /tmp/test-results
+
+      - store_artifacts:
+          path: /tmp/test-results

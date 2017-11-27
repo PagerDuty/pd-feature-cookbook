@@ -14,7 +14,7 @@ There is a test cookbook under `test/pd-feature-test` that contains examples for
 
 To use the library, add this cookbook to your `metadata.rb`:
 
-```
+```ruby
 depends 'pd-feature'
 ```
 
@@ -30,7 +30,7 @@ end
 
 Finally, write the feature flag rules. The rules are stored as Chef attributes. For a cookbook named 'foo' and a feature named 'bar', the attribute should be named like this:
 
-```
+```ruby
 default['foo']['feature_bar'] = false
 ```
 
@@ -38,7 +38,7 @@ The simplest rules are `true` (feature is always enabled) and `false` (feature i
 
 ### Count rule
 
-```
+```ruby
 default['foo']['feature_bar'] = 'count:3'
 ```
 
@@ -46,7 +46,7 @@ In this example, the feature is enabled for the first 3 machines in every Chef e
 
 ### Percent rule
 
-```
+```ruby
 default['foo']['feature_bar'] = 'percent:51'
 ```
 
@@ -56,7 +56,7 @@ Percentages are interpreted as floats, so using a slightly bigger value avoids f
 
 ### Role-specific rule
 
-```
+```ruby
 default['foo']['feature_bar'] = 'role'
 default['foo']['feature_bar_app'] = 'count:2'
 ```
@@ -73,13 +73,23 @@ What does it mean "the first X machines" or "the first Y percent"? The implement
 
 Rules can be combined:
 
-```
+```ruby
 default['foo']['feature_bar'] = 'count:1,percent:26'
 ```
 
 means at least one node will be chosen, and in large environments about a quarter of nodes will be chosen. The operator is "OR" and the first match that enables the feature stops the evaluation.
 
 You cannot have a simple rule (`true` or `false`) in a combination, because it is pointless: `false` is implied (feature is disabled if it is not enabled by any rule), and `true` would always enable the feature, rendering the rest of the clauses unnecessary.
+
+### Custom scope
+
+By default, all rules are evaluated in the context of the Chef environment a node is located in. You can specify any other context using the optional `search_scope` parameter. It will replace the environment-specific search. This can be used select more complicated subsets of nodes or to apply a feature to the entire infrastructure with a global search like `node:*`.
+
+```ruby
+if feature_enabled?('name_of_feature', search_scope: 'cloud_provider:ec2')
+  aws_specific_new_hotness
+end
+```
 
 ### Debugging
 

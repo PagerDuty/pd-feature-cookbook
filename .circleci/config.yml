@@ -23,7 +23,7 @@ jobs:
           key: gems-{{ checksum "Gemfile.lock" }}
 
       - run:
-          name: specs
+          name: Run tests
           command: |
             mkdir /tmp/test-results
             bundle exec rspec --format progress \

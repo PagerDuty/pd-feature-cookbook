@@ -9,7 +9,7 @@ describe 'pd-feature-test::role' do
   end
 
   before do
-    stub_search('node', 'chef_environment:_default AND roles:app').and_return((1..3).map { |i| Chef::Node.build("node#{i}") })
+    stub_search('node', 'chef_environment:_default AND roles:app').and_return((1..3).map { |i| { 'name' => "node#{i}" } })
   end
 
   it 'enables the feature for the first app node' do

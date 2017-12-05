@@ -9,7 +9,7 @@ describe 'pd-feature-test::rules' do
   end
 
   before do
-    stub_search('node', 'chef_environment:_default').and_return((1..3).map { |i| Chef::Node.build("node#{i}") })
+    stub_search('node', 'chef_environment:_default').and_return((1..3).map { |i| { 'name' => "node#{i}" } })
   end
 
   it 'selects the first node to participate in both groups' do

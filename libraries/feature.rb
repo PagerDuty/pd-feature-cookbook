@@ -106,7 +106,7 @@ module PagerDuty
 
     def stable_scoped_search(scope)
       Chef::Log.debug("Feature check: performing scoped search '#{scope}'")
-      search(:node, scope, filter_result: { 'name' => ['name'] }).map(&:name).sort
+      search(:node, scope, filter_result: { 'name' => ['name'] }).map{ |h| h['name'] }.sort
     end
 
     def feature_translate(boolean)

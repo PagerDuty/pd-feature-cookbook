@@ -44,4 +44,18 @@ describe 'pd-feature-test::rules' do
       expect(subject).to_not create_file('percent')
     end
   end
+
+  context 'for a node being provisioned' do
+    subject do
+      ChefSpec::SoloRunner.new do |node|
+        node.name 'node0'
+        node.chef_environment '_default'
+      end.converge(described_recipe)
+    end
+
+    it 'selects the node to participate in neither group' do
+      expect(subject).to_not create_file('count')
+      expect(subject).to_not create_file('percent')
+    end
+  end
 end

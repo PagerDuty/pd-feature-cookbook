@@ -66,7 +66,11 @@ module PagerDuty
       count = arg.to_i
 
       result = stable_scoped_search(context[:search])
-      Chef::Log.debug("Feature check: this node's position for feature '#{context[:name]}' is #{result.index(node.name) + 1} out of #{result.length}")
+      if result.index(node.name)
+        Chef::Log.debug("Feature check: this node's position for feature '#{context[:name]}' is #{result.index(node.name) + 1} out of #{result.length}")
+      else
+        Chef::Log.debug("Feature check: this node does not show up in the search for feature '#{context[:name]}'")
+      end
       result.first(count).include? node.name
     end
 
@@ -75,7 +79,11 @@ module PagerDuty
 
       result = stable_scoped_search(context[:search])
       count = (result.length * percent / 100).floor
-      Chef::Log.debug("Feature check: this node's percentage position for feature '#{context[:name]}' is #{format('%.1f', (result.index(node.name) + 1.0) / result.length * 100.0)}")
+      if result.index(node.name)
+        Chef::Log.debug("Feature check: this node's percentage position for feature '#{context[:name]}' is #{format('%.1f', (result.index(node.name) + 1.0) / result.length * 100.0)}")
+      else
+        Chef::Log.debug("Feature check: this node does not show up in the search for feature '#{context[:name]}'")
+      end
       result.first(count).include? node.name
     end
 

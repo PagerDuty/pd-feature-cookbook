@@ -91,6 +91,15 @@ if feature_enabled?('name_of_feature', search_scope: 'cloud_provider:ec2')
 end
 ```
 
+### Overriding at runtime
+
+If you use chef-client to run playbooks, you can use the `--json-attributes` option to manually enable or disable a feature flag:
+
+```shell
+$ echo '{"mycookbook":{"feature_jumboframes":true}}' > /tmp/jumbo.json 
+$ chef-client -j /tmp/jumbo.json
+```
+
 ### Debugging
 
 The cookbook outputs a bunch of information on the `DEBUG` log level to help you understand which features are enabled and why. Here are a few examples:
